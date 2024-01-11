@@ -13,7 +13,7 @@ const Homepage = () => {
           <div className="section-wrap align">
             <div className="general-heading-wrapper">
               <div className="general-big-desc mw-1000 mw-full-m -mw-full-i text-center">
-                <h3>Ditukarkan</h3>
+                <h3>Perubahan</h3>
               </div>
               <div className="general-subtitle mw-1000 mw-full-m -mw-full-i text-center ">
                 <p>
