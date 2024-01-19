@@ -8,7 +8,9 @@ import Upload from '../../pages/Upload/Upload'
 import Shortcut from '../../pages/Shortcut/Shortcut'
 import EditStyleguide from '../../pages/Styleguide/EditStyleguide'
 import Preview from '../../pages/Styleguide/Preview'
-
+import SignIn from '../../pages/Sign/SignIn'
+import SignUp from '../../pages/Sign/SignUp'
+import ForgotPass from '../../pages/Forgot/Forgot'
 
 // header routing
 const HeaderRoutes = () => {
@@ -24,6 +26,9 @@ const HeaderRoutes = () => {
           <Route path="/upload" element={<Upload />} />
           <Route path="/preview" element={<Preview />} />
           <Route path="*" element={<NoPage />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
         </Routes>
       </>
     </Router>

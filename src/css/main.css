@@ -228,6 +228,77 @@
   overflow: hidden;
 }
 
+/* ------------------------- dayang punyer -------------------------------------------------- */
+
+.new-sign-in-form {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  min-height: 100vh; 
+  background-color: transparent;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+  z-index: 0;
+  margin: 2em 0;
+  
+
+}
+
+
+.new-sign-in-form .modal-container {
+  position: static;
+  transform: none;
+}
+
+.new-sign-in-form .modal-item {
+  margin: 0 auto;
+  padding: 2em; 
+}
+
+.new-sign-in-form  .default-btn.secondary-btn {
+  width: 100%; 
+}
+
+
+.new-sign-in-form .default-btn.secondary-btn .btn-link{
+  padding: 0.75em 1em;
+}
+
+.form-custom .form-col.form-submit-btn.full-width {
+  margin-bottom: 0;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.input-details {
+  position: relative;
+}
+
+.show-password-icon {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 1em
+}
+
+.forgot-password-link{
+  padding: 1em 0;
+}
+.forgot-password-link a{
+  color: var(--main-color);
+}
+
+.form-custom .form-col.no-margin{
+  margin: 0.5em 0;
+}
+
+
+/* habis dayang punya */
+
 /* styleguide settings modal */
 .modal-item.styleguide-settings {
   padding: 0;
@@ -235,6 +306,11 @@
 @media only screen and (min-width: 1024px) {
   .modal-item.styleguide-settings {
     min-width: 70em;
+  }
+
+  .new-sign-in-form .modal-item {
+    width: 50%;
+    padding: 2em 8em;
   }
 }
 

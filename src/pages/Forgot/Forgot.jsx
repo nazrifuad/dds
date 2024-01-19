@@ -1,22 +1,22 @@
 import React from 'react'
 import MainGradient from "../../components/Gradient/MainGradient";
-import NewSignIn from "../../components/Modal/NewSignIn";
+import ForgotPassword from "../../components/Modal/ForgotPassword";
 
 
 
 
-const SignIn = () => {
+const Forgot = () => {
   return (
     <div>
       <section className="section main-section full-height">
         <div className="container">
           <MainGradient />
           
-          <NewSignIn />
+          <ForgotPassword />
         </div>
       </section>
     </div>
   )
 }
 
-export default SignIn;
+export default Forgot;
