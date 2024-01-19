@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import showPassIcon from '../../assets/img/show-pass.svg';
 import { Link } from 'react-router-dom'; 
+import asset1 from '../../assets/img/asset1.png'; 
+import asset2 from '../../assets/img/asset2.png'; 
 
 const NewSignIn = () => {
 const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +13,8 @@ const togglePasswordVisibility = () => {
     return (
         <div className="modal-section show-modal new-sign-in-form">
           <div className="modal-container">
+            {/* Asset 1 */}
+          <img src={asset1} alt="" style={{ position: 'absolute', top:'1rem', left: '7rem', zIndex: 1, maxWidth: '18%' }} />
             <div className="modal-item">
               <div className="desc-wrap">
                 <h3>Welcome Back!</h3>
@@ -53,7 +57,7 @@ const togglePasswordVisibility = () => {
                         />
                         <img 
                             src={showPassIcon} 
-                            alt="Show Password" 
+                            alt="" 
                             onClick={togglePasswordVisibility}
                             className="show-password-icon"
                         />
@@ -90,6 +94,8 @@ const togglePasswordVisibility = () => {
             Don't have an account? <Link to="/sign-up" style={{ color: 'var(--main-color)' }}> Sign up here</Link>
           </div>
             </div>
+              {/* Asset 2 */}
+           <img src={asset2} alt="" style={{ position: 'absolute', bottom: '0', right: '1rem', zIndex: 1 , maxWidth: '25%', transform: 'rotate(-45deg)'}} />
           </div>
         </div>
       );

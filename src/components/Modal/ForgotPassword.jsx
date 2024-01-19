@@ -1,6 +1,5 @@
 import React from 'react';
-import asset1 from '../../assets/img/asset1.png'; // Adjust the path as necessary
-import asset2 from '../../assets/img/asset2.png'; // Adjust the path as necessary
+
 
 
 const ForgotPassword = () => {
@@ -9,8 +8,7 @@ const ForgotPassword = () => {
         <div className="modal-section show-modal new-sign-in-form">
           
           <div className="modal-container">
-            {/* Asset 1 */}
-          <img src={asset1} alt="Asset 1" style={{ position: 'absolute', top:'4.5rem', left: '6rem', zIndex: 1, maxWidth: '18%' }} />
+            
             <div className="modal-item" style={{ padding: '4em 7em'}}>
               <div className="desc-wrap">
                 <h3>Forgot Password?</h3>
@@ -59,8 +57,7 @@ const ForgotPassword = () => {
             Don't have an account? <Link to="/sign-up" style={{ color: 'var(--main-color)' }}> Sign up here</Link>
           </div> */}
             </div>
-            {/* Asset 2 */}
-           <img src={asset2} alt="Asset 2" style={{ position: 'absolute', bottom: '5rem', right: '1rem', zIndex: 1 , maxWidth: '25%', transform: 'rotate(-45deg)'}} />
+          
           </div>
 
            
