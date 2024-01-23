@@ -1,0 +1,9 @@
+const express = require("express");
+const userController = require("./../controllers/userController");
+const dbConnectionMiddleware = require("./../middleware/dbConnection");
+
+const router = express.Router();
+
+router.use(dbConnectionMiddleware);
+router.route("/").get(userController.getAllUsers);
+module.exports = router;
