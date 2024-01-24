@@ -25,14 +25,13 @@ class App extends Component {
     return (
       <main className="main-content">
         <HeaderRoutes />
-        <h1>User List</h1>
-        <ul>
+        {/* <ul>
           {users.map((user) => (
             <li key={user.id}>
               {`Name: ${user.name}, Age: ${user.age}, Email: ${user.email}`}
             </li>
           ))}
-        </ul>
+        </ul> */}
         {this.props.children}
       </main>
     );
