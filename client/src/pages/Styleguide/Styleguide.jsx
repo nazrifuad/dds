@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Axios from "axios";
 import Swiper from "swiper";
 import "swiper/swiper-bundle.css";
 import { Navigation } from "swiper/modules";
@@ -19,6 +20,23 @@ import EditStyleguide from "../../components/Modal/EditStyleguide";
 import OverlayEdit from "../../components/Button/OverlayEdit";
 
 const Styleguide = () => {
+  //backend
+  const [styleguides, setStyleguides] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await Axios.get(
+        "http://127.0.0.1:3000/api/v1/styleguides"
+      );
+      setStyleguides(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   // styleguide slider
   useEffect(() => {
     const swiper = new Swiper(".swiper.styleguide", {
@@ -44,11 +62,11 @@ const Styleguide = () => {
     });
   }, []); // run this effect only once when the component mounts
 
-
-
   // add modal function
-  const [isNewStyleguideModalVisible, setNewStyleguideModalVisible] = useState(false);
-  const [isEditStyleguideModalVisible, setEditStyleguideModalVisible] = useState(false);
+  const [isNewStyleguideModalVisible, setNewStyleguideModalVisible] =
+    useState(false);
+  const [isEditStyleguideModalVisible, setEditStyleguideModalVisible] =
+    useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
@@ -66,10 +84,10 @@ const Styleguide = () => {
 
   // modal function (open/close) called
   const showModal = (modalType) => {
-    if (modalType === 'newStyleguide') {
+    if (modalType === "newStyleguide") {
       setNewStyleguideModalVisible(true);
       setEditStyleguideModalVisible(false);
-    } else if (modalType === 'editStyleguide') {
+    } else if (modalType === "editStyleguide") {
       setNewStyleguideModalVisible(false);
       setEditStyleguideModalVisible(true);
     }
@@ -83,6 +101,12 @@ const Styleguide = () => {
   return (
     <>
       <section className="section main-section full-height">
+        <h2>Styleguide List</h2>
+        <ul>
+          {styleguides.map((styleguide) => (
+            <li key={styleguide.id}>{styleguide.name}</li>
+          ))}
+        </ul>
         <div className="container">
           {/* gradient bg */}
           <MainGradient />
@@ -102,19 +126,26 @@ const Styleguide = () => {
             <div className="swiper-container styleguide">
               <div className="swiper general styleguide">
                 <div className="swiper-wrapper">
-                  <div className="swiper-slide cards-wrap">
-                    <Link to="/shortcut" className="card-link-wrapper">
-                      <div className="cards-desc-wrap">
-                        <div className="cards-image-wrap">
-                          <img src={gbsLogo} alt="GBS" />
+                  {styleguides.map((styleguide) => (
+                    <div
+                      key={styleguide.id}
+                      className="swiper-slide cards-wrap"
+                    >
+                      <Link to="/shortcut" className="card-link-wrapper">
+                        <div className="cards-desc-wrap">
+                          <div className="cards-image-wrap">
+                            <img src={setiaLogo} alt="SP Setia" />
+                          </div>
+                          <div className="cards-title">
+                            <h5 className="big">{styleguide.name}</h5>
+                          </div>
                         </div>
-                        <div className="cards-title">
-                          <h5 className="big">Gravitas Business Solution</h5>
-                        </div>
-                      </div>
-                    </Link>
-                    <OverlayEdit showModal={() => showModal("editStyleguide")}/>
-                  </div>
+                      </Link>
+                      <OverlayEdit
+                        showModal={() => showModal("editStyleguide")}
+                      />
+                    </div>
+                  ))}
                   <div className="swiper-slide cards-wrap">
                     <Link to="/shortcut" className="card-link-wrapper">
                       <div className="cards-desc-wrap">
@@ -126,49 +157,11 @@ const Styleguide = () => {
                         </div>
                       </div>
                     </Link>
-                    <OverlayEdit showModal={() => showModal("editStyleguide")}/>
-                  </div>
-                  <div className="swiper-slide cards-wrap">
-                    <Link to="/shortcut" className="card-link-wrapper">
-                      <div className="cards-desc-wrap">
-                        <div className="cards-image-wrap">
-                          <img src={takafulLogo} alt="Takaful Malaysia" />
-                        </div>
-                        <div className="cards-title">
-                          <h5 className="big">Takaful Malaysia</h5>
-                        </div>
-                      </div>
-                    </Link>
-                    <OverlayEdit showModal={() => showModal("editStyleguide")}/>
-                  </div>
-                  <div className="swiper-slide cards-wrap">
-                    <Link to="/shortcut" className="card-link-wrapper">
-                      <div className="cards-desc-wrap">
-                        <div className="cards-image-wrap">
-                          <img src={ytlLogo} alt="YTL" />
-                        </div>
-                        <div className="cards-title">
-                          <h5 className="big">YTL</h5>
-                        </div>
-                      </div>
-                    </Link>
-                    <OverlayEdit showModal={() => showModal("editStyleguide")}/>
-                  </div>
-                  <div className="swiper-slide cards-wrap">
-                    <Link to="/shortcut" className="card-link-wrapper">
-                      <div className="cards-desc-wrap">
-                        <div className="cards-image-wrap">
-                          <img src={suriaKlccLogo} alt="Suria KLCC" />
-                        </div>
-                        <div className="cards-title">
-                          <h5 className="big">Suria KLCC</h5>
-                        </div>
-                      </div>
-                    </Link>
-                    <OverlayEdit showModal={() => showModal("editStyleguide")}/>
+                    <OverlayEdit
+                      showModal={() => showModal("editStyleguide")}
+                    />
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -179,7 +172,10 @@ const Styleguide = () => {
               </div>
             </div>
             <div className="general-card">
-              <div className="cards-desc-wrap click" onClick={() => showModal('newStyleguide')}>
+              <div
+                className="cards-desc-wrap click"
+                onClick={() => showModal("newStyleguide")}
+              >
                 <div className="item">
                   <img src={plusIcon} alt="Icon" />
                 </div>
