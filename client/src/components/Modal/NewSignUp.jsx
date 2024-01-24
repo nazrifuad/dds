@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import showPassIcon from "../../assets/img/show-pass.svg";
-import { Link } from "react-router-dom";
 import asset1 from "../../assets/img/asset1.png";
 import asset2 from "../../assets/img/asset2.png";
 
@@ -13,11 +13,12 @@ const NewSignUp = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const registerUser = () => {
     Axios.post("http://127.0.0.1:3000/api/v1/users", { email, password })
       .then(() => {
         alert("User registration successful");
+        navigate("/styleguide");
       })
       .catch((error) => {
         console.error(error);

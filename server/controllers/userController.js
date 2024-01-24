@@ -1,4 +1,5 @@
-// userController.js
+const bcrypt = require("bcrypt");
+
 exports.getAllUsers = async (req, res) => {
   try {
     const connection = req.dbConnection;
@@ -34,9 +35,11 @@ exports.createUser = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     connection.query(
       "INSERT INTO user (organization_id,email,name,password,created_at) VALUES (1, ?, 1, ?, CURRENT_TIMESTAMP)",
-      [email, password],
+      [email, hashedPassword],
       (err, result) => {
         if (err) {
           console.error(`Error: ${err}`);
