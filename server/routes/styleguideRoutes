@@ -1,0 +1,13 @@
+const express = require("express");
+const styleguideController = require("./../controllers/styleguideController");
+const dbConnectionMiddleware = require("./../middleware/dbConnection");
+
+const router = express.Router();
+
+router.use(dbConnectionMiddleware);
+router
+  .route("/")
+  .get(styleguideController.getAllStyleGuides)
+  .post(styleguideController.createStyleGuides);
+
+module.exports = router;
