@@ -1,0 +1,33 @@
+## Prerequisites
+
+- Pulled the project from github "Connect-Database" Branch
+
+## Database Setup
+
+1. Download the SQL file from the folder "dds_db.sql".
+2. Launch XAMPP and create a new database named `dds_db`.
+3. Once created, click on "Import" and import the downloaded SQL file into the `dds_db` database.
+
+## Database Configuration
+
+1. To modify database configurations such as the username and password:
+   - Navigate to `server/server.js` for the server-side configuration.
+   - Explore `middleware/dbConnection.js` for database connection middleware settings.
+
+## Project Setup
+
+Follow these steps to set up and run the project:
+
+1. Open your terminal (you can open a new terminal directly from your code editor or use a standalone terminal application).
+2. Navigate to the server folder: `cd server`.
+3. Run `npm install` to install server dependencies.
+4. Start the server: `npm run start`.
+
+Now, open a new terminal by clicking on the plus icon at the top of the terminal.
+
+5. Navigate to the client folder: `cd client`.
+6. Run `npm install` to install client dependencies.
+7. Start the client development server: `npm run dev`.
+8. Click on the link provided in the terminal output to open the application in your web browser.
+
+By following these steps, you'll have the database set up and the project running locally on your machine. Feel free to customize the instructions further based on your project's specific requirements or any additional setup steps.
