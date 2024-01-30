@@ -5,6 +5,9 @@ const dbConnectionMiddleware = require("./../middleware/dbConnection");
 const router = express.Router();
 
 router.use(dbConnectionMiddleware);
+
+router.route("/login").post(userController.login);
+
 router
   .route("/")
   .get(userController.getAllUsers)

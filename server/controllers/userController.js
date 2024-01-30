@@ -31,7 +31,6 @@ exports.getAllUsers = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const connection = req.dbConnection;
-
     const email = req.body.email;
     const password = req.body.password;
 
@@ -64,5 +63,50 @@ exports.createUser = async (req, res) => {
       status: "error",
       message: "Internal Server Error",
     });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const connection = req.dbConnection;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    connection.query(
+      "SELECT *  FROM `user` WHERE `email` = ?",
+      email,
+      (err, result) => {
+        if (err) {
+          console.error(`Error: ${err}`);
+          return res.status(404).json({
+            status: "Error",
+            message: `Wrong username/password combination!`,
+          });
+        }
+
+        if (result.length > 0) {
+          bcrypt.compare(password, result[0].password, (error, response) => {
+            if (response) {
+              return res.status(200).json({
+                status: "success",
+                data: response,
+              });
+            } else {
+              return res.status(404).json({
+                status: "Error",
+                message: `Wrong username/password combination!`,
+              });
+            }
+          });
+        } else {
+          return res.status(404).json({
+            status: "Error",
+            message: `Wrong username/password combination!`,
+          });
+        }
+      }
+    );
+  } catch (err) {
+    //some error handling here
   }
 };
