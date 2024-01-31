@@ -17,18 +17,19 @@ app.use(
     credentials: true,
   })
 );
-app.use(cookieParser());
-app.use(
-  session({
-    key: "userID",
-    secret: "uniquekey",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: true, expires: 60 * 60 * 24 },
-  })
-);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(cookieParser());
+// app.use(
+//   session({
+//     key: "userID",
+//     secret: "uniquekey",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: true, expires: 60 * 60 * 24 },
+//   })
+// );
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/styleguides", styleguideRouter);

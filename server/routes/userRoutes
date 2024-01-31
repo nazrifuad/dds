@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(dbConnectionMiddleware);
 
-router.route("/login").post(userController.login).get(userController.getLogin);
+router.route("/login").post(userController.login);
 
 router
   .route("/")

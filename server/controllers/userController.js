@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const session = require("express-session");
 const jwt = require("jsonwebtoken");
 
 exports.getAllUsers = async (req, res) => {
@@ -94,12 +93,9 @@ exports.login = async (req, res) => {
                 expiresIn: "1d",
               });
               res.cookie("token", token);
-
-              req.session.user = result;
-              //console.log(req.session.user);
               return res.status(200).json({
                 status: "success",
-                data: req.session.user,
+                data: token,
               });
             } else {
               return res.status(404).json({
@@ -134,4 +130,25 @@ exports.getLogin = async (req, res) => {
       });
     }
   } catch (err) {}
+};
+
+exports.verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    console.log("no token");
+    res.status(401).json({
+      status: "Error",
+      message: "No Token",
+    });
+  } else {
+    console.log("got token");
+    jwt.verify(token, "jwt-secret-token", (err, decoded) => {
+      if (err) {
+        console.log("no match");
+      } else {
+        req.name = decoded.name;
+        next();
+      }
+    });
+  }
 };

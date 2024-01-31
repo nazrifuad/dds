@@ -3,7 +3,7 @@ import Axios from "axios";
 import Swiper from "swiper";
 import "swiper/swiper-bundle.css";
 import { Navigation } from "swiper/modules";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import MainGradient from "../../components/Gradient/MainGradient";
 import gbsLogo from "../../assets/img/gbs-horizontal-logo.png";
@@ -18,8 +18,12 @@ import plusIcon from "../../assets/img/plus-icon.svg";
 import NewStyleguide from "../../components/Modal/NewStyleguide";
 import EditStyleguide from "../../components/Modal/EditStyleguide";
 import OverlayEdit from "../../components/Button/OverlayEdit";
+import axios from "axios";
 
 const Styleguide = () => {
+  const navigate = useNavigate();
+  Axios.defaults.withCredentials = true;
+
   //backend
   const [styleguides, setStyleguides] = useState([]);
   useEffect(() => {
@@ -29,13 +33,25 @@ const Styleguide = () => {
   const fetchData = async () => {
     try {
       const response = await Axios.get(
-        "http://127.0.0.1:3000/api/v1/styleguides"
+        "http://localhost:3000/api/v1/styleguides"
       );
       setStyleguides(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+      navigate("/sign-in");
     }
   };
+
+  // useEffect(() => {
+  //   axios.get("http://127.0.0.1:3000/api/v1/styleguides").then((res) => {
+  //     if (res.data.status === "success") {
+  //       console.log(res);
+  //       setStyleguides(res.data.data);
+  //     } else {
+  //       console.log("mah");
+  //     }
+  //   });
+  // });
 
   // styleguide slider
   useEffect(() => {
@@ -110,7 +126,6 @@ const Styleguide = () => {
         <div className="container">
           {/* gradient bg */}
           <MainGradient />
-
           <div className="section-wrap">
             {/* styleguide slider */}
             <div className="general-wrap">

@@ -14,6 +14,7 @@ const NewSignIn = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   Axios.defaults.withCredentials = true;
+
   const login = (event) => {
     event.preventDefault();
     Axios.post("http://localhost:3000/api/v1/users/login", { email, password })
@@ -28,7 +29,7 @@ const NewSignIn = () => {
       })
       .catch((error) => {
         console.error(error);
-        alert(`User  failed to log in${error}`);
+        alert(`Failed to log in${error}`);
       });
   };
 
