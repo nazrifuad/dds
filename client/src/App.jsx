@@ -10,7 +10,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.callAPI();
+    //this.callAPI();
     //this.checkLoginStatus();
   }
 

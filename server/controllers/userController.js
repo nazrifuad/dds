@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -87,6 +89,12 @@ exports.login = async (req, res) => {
         if (result.length > 0) {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
+              const name = result[0].name;
+              const token = jwt.sign({ name }, "jwt-secret-token", {
+                expiresIn: "1d",
+              });
+              res.cookie("token", token);
+
               req.session.user = result;
               //console.log(req.session.user);
               return res.status(200).json({

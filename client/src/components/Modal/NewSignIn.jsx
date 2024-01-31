@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import showPassIcon from "../../assets/img/show-pass.svg";
 import { Link, useNavigate } from "react-router-dom";
 import asset1 from "../../assets/img/asset1.png";
@@ -18,15 +18,30 @@ const NewSignIn = () => {
     event.preventDefault();
     Axios.post("http://localhost:3000/api/v1/users/login", { email, password })
       .then((res) => {
-        console.log(res);
-        alert("User Logged IN");
-        navigate("/styleguide");
+        if (res.data.status === "success") {
+          console.log(res);
+          alert("User Logged IN");
+          navigate("/styleguide");
+        } else {
+          alert(res.data.error);
+        }
       })
       .catch((error) => {
         console.error(error);
         alert(`User  failed to log in${error}`);
       });
   };
+
+  //will run everytime refresh
+  // useEffect(() => {
+  //   Axios.get("http://localhost:3000/api/v1/users/login").then((response) => {
+  //     if (response.data.loggedIn == true) {
+  //       console.log("logged");
+  //     } else {
+  //       console.log("nope");
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div className="modal-section show-modal new-sign-in-form">

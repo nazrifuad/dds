@@ -21,10 +21,10 @@ app.use(cookieParser());
 app.use(
   session({
     key: "userID",
-    secret: secret,
+    secret: "uniquekey",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true },
+    cookie: { secure: true, expires: 60 * 60 * 24 },
   })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
