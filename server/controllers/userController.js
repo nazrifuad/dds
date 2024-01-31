@@ -87,9 +87,11 @@ exports.login = async (req, res) => {
         if (result.length > 0) {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
+              req.session.user = result;
+              //console.log(req.session.user);
               return res.status(200).json({
                 status: "success",
-                data: response,
+                data: req.session.user,
               });
             } else {
               return res.status(404).json({
@@ -109,4 +111,19 @@ exports.login = async (req, res) => {
   } catch (err) {
     //some error handling here
   }
+};
+
+exports.getLogin = async (req, res) => {
+  try {
+    if (req.session.user) {
+      res.status(200).json({
+        loggedIn: true,
+        user: req.session.user,
+      });
+    } else {
+      res.status(401).json({
+        loggedIn: false,
+      });
+    }
+  } catch (err) {}
 };

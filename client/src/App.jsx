@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./css/main.css";
 import HeaderRoutes from "./components/Routes/HeaderRoutes";
+import Axios from "axios";
 
 class App extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class App extends Component {
 
   componentDidMount() {
     this.callAPI();
+    //this.checkLoginStatus();
   }
 
   callAPI() {
@@ -35,6 +37,15 @@ class App extends Component {
         {this.props.children}
       </main>
     );
+  }
+
+  checkLoginStatus() {
+    Axios.get("http://localhost:3000/api/v1/users/login")
+      .then((res) => {
+        console.log(res);
+        // Handle response here
+      })
+      .catch((error) => console.error("Error checking login status:", error));
   }
 }
 

@@ -6,25 +6,33 @@ import asset1 from "../../assets/img/asset1.png";
 import asset2 from "../../assets/img/asset2.png";
 
 const NewSignUp = () => {
+  Axios.defaults.withCredentials = true;
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const registerUser = () => {
-    Axios.post("http://127.0.0.1:3000/api/v1/users", { email, password })
+    Axios.post("http://localhost:3000/api/v1/users", { email, password })
       .then(() => {
         alert("User registration successful");
         navigate("/styleguide");
       })
       .catch((error) => {
         console.error(error);
-        alert("User registration failed");
+        alert(`User registration failed ${error}`);
       });
   };
+
+  // useEffect(() => {
+  //   //everytime refresh/code execute,will get info from this url
+  //   Axios.get("http://localhost:3000/api/v1/users/login").then((res) => {
+  //     console.log(res);
+  //   });
+  // }, []);
 
   return (
     <div className="modal-section show-modal new-sign-in-form">
