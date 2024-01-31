@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.use(dbConnectionMiddleware);
 
-router.route("/login").post(userController.login);
+router.route("/login").post(userController.login).get(userController.getLogin);
 router.route("/logout").get(userController.logout);
 router
   .route("/")
   .get(userController.getAllUsers)
-  .post(userController.createUser);
+  .post(userController.verifyNotLoggedIn, userController.createUser);
 
 module.exports = router;

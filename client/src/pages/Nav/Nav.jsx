@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import Axios from "axios";
 import MainLogo from "../../components/Logo/MainLogo";
 import ProfileImage from "../../components/ProfileImage/ProfileImage";
 import SearchInput from "../../components/Search/SearchInput";
@@ -7,9 +8,31 @@ import SearchInput from "../../components/Search/SearchInput";
 import StyleguideSettings from "../../components/Modal/StyleguideSettings";
 import ShareStyleguide from "../../components/Modal/ShareStyleguide";
 
-import previewIcon from "../../assets/img/preview-icon.svg"
+import previewIcon from "../../assets/img/preview-icon.svg";
 
 const Nav = () => {
+  //backend
+  Axios.defaults.withCredentials = true;
+  const [auth, setAuth] = useState(false);
+
+  // useEffect(() => {
+  //   const fetchUserLoginStatus = async () => {
+  //     try {
+  //       const res = await Axios.get("http://localhost:3000/api/v1/users/login");
+  //       if (res) {
+  //         console.log(res);
+  //         setAuth(res.data.logged);
+  //       } else {
+  //         setAuth(false);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user login status:", error);
+  //       setAuth(false);
+  //     }
+  //   };
+  //   fetchUserLoginStatus();
+  // }, []);
+
   // active nav function
   const location = useLocation();
   const isNavLinkActive = (path) => {
@@ -17,10 +40,7 @@ const Nav = () => {
   };
 
   // Specify an array of paths for which to hide the "Styleguide Settings" for regular users
-  const hiddenUserNav = [
-    "/edit-styleguide",
-    "/shortcut",
-  ];
+  const hiddenUserNav = ["/edit-styleguide", "/shortcut"];
 
   // Specify an array of paths for which to hide the "Styleguide" and "Upload" links for editors
   const hiddenEditorNav = ["/", "/upload", "/styleguide"];
@@ -41,10 +61,16 @@ const Nav = () => {
                 event.preventDefault();
                 showModal("StyleguideSettings");
               }}
-              className={isStyleguideSettingsModalVisible ? "active-link" : (isSettingsActive ? "active-link" : "")}
+              className={
+                isStyleguideSettingsModalVisible
+                  ? "active-link"
+                  : isSettingsActive
+                  ? "active-link"
+                  : ""
+              }
               data-replace="Settings"
             >
-             <span>Settings</span>
+              <span>Settings</span>
             </NavLink>
           </li>
           <li className="share-modal-nav">
@@ -54,7 +80,13 @@ const Nav = () => {
                 event.preventDefault();
                 showModal("ShareStyleguide");
               }}
-              className={isShareStyleguideModalVisible ? "active-link" : (isShareActive ? "active-link" : "")}
+              className={
+                isShareStyleguideModalVisible
+                  ? "active-link"
+                  : isShareActive
+                  ? "active-link"
+                  : ""
+              }
               data-replace="Share"
             >
               <span>Share</span>
@@ -98,10 +130,11 @@ const Nav = () => {
     }
   };
 
-
   // open styleguide settings modal
-  const [isStyleguideSettingsModalVisible, setStyleguideSettingsModalVisible] = useState(false);
-  const [isShareStyleguideModalVisible, setShareStyleguideModalVisible] = useState(false);
+  const [isStyleguideSettingsModalVisible, setStyleguideSettingsModalVisible] =
+    useState(false);
+  const [isShareStyleguideModalVisible, setShareStyleguideModalVisible] =
+    useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const showModal = (modalType) => {
@@ -129,9 +162,6 @@ const Nav = () => {
     console.log("Search submitted:", searchTerm);
   };
 
-
-
-
   return (
     <>
       <header className="header section nav-mobile-not-active">
@@ -140,7 +170,7 @@ const Nav = () => {
             <div className="left-navbar">
               <div className="btn-link btn-nav-home">
                 <NavLink
-                  to="/"
+                  to={auth ? "/styleguide" : "/"}
                   className={`default-btn-click ${
                     isNavLinkActive("/") ? "active-link" : ""
                   }`}
@@ -207,7 +237,6 @@ const Nav = () => {
         handleSearchSubmit={handleSearchSubmit}
         searchTerm={searchTerm}
       />
-
     </>
   );
 };

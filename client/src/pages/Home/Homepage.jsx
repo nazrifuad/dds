@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MainGradient from "../../components/Gradient/MainGradient";
+import Axios from "axios";
 
 const Homepage = () => {
+  Axios.defaults.withCredentials = true;
+
+  // const [auth, setAuth] = useState(false);
+  // useEffect(() => {
+  //   Axios.get("http://localhost:3000/api/v1/users/login").then((res) => {
+  //     console.log(res.data);
+  //     if (res) {
+  //       setAuth(res.data.logged);
+  //     } else {
+  //       setAuth(false);
+  //     }
+  //   });
+  // });
+
   return (
     <>
       <section className="section main-section full-height">

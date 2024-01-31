@@ -14,13 +14,6 @@ class App extends Component {
     //this.checkLoginStatus();
   }
 
-  callAPI() {
-    fetch("http://localhost:3000/api/v1/users")
-      .then((res) => res.json())
-      .then((data) => this.setState({ users: data.data || [] }))
-      .catch((error) => console.error("Error fetching data:", error));
-  }
-
   render() {
     const { users } = this.state;
 

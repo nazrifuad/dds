@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import closeIcon from "../../assets/img/close-icon.svg";
 
@@ -11,11 +12,16 @@ const NewStyleguide = ({
 }) => {
   // BACKEND
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
-  const createStyleGuide = () => {
-    Axios.post("http://127.0.0.1:3000/api/v1/styleguides", { name })
-      .then(() => {
-        alert("StyleGuide was created successfully");
+  const createStyleGuide = (event) => {
+    console.log("cjcjc");
+    event.preventDefault();
+    Axios.post("http://localhost:3000/api/v1/styleguides", { name })
+      .then((res) => {
+        if (res.status === "success") {
+          navigate("ssss");
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -56,7 +62,7 @@ const NewStyleguide = ({
               <p>Start by adding a new styleguide</p>
             </div>
             <div className="input-wrapper pt-50">
-              <form className="form-custom" onSubmit={handleSearchSubmit}>
+              <form className="form-custom" onSubmit={createStyleGuide}>
                 <div className="form-row">
                   <div className="form-col">
                     <label htmlFor="newStyleguide">
@@ -69,8 +75,9 @@ const NewStyleguide = ({
                           name="name"
                           type="text"
                           placeholder="Enter the styleguide name"
-                          value={searchTerm}
-                          onChange={handleSearchChange}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
                           autoComplete="off"
                           required
                         />
@@ -86,7 +93,6 @@ const NewStyleguide = ({
                         <button
                           type="submit"
                           className="btn-text"
-                          onClick={createStyleGuide}
                           data-replace="Create"
                         >
                           <span className="inner-btn-text">Create</span>

@@ -11,5 +11,4 @@ router
   .route("/")
   .get(userController.verifyUser, styleguideController.getAllStyleGuides)
   .post(styleguideController.createStyleGuides);
-
 module.exports = router;

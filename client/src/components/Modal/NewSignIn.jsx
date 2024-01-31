@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import showPassIcon from "../../assets/img/show-pass.svg";
 import { Link, useNavigate } from "react-router-dom";
 import asset1 from "../../assets/img/asset1.png";
 import asset2 from "../../assets/img/asset2.png";
-import Axios from "axios";
 
 const NewSignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +12,7 @@ const NewSignIn = () => {
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
   Axios.defaults.withCredentials = true;
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"; // Added useRef
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import settingsIcon from "../../assets/img/settings-icon.svg";
 import logOutIcon from "../../assets/img/log-out-icon.svg";
 import Axios from "axios";
@@ -16,6 +16,7 @@ const ProfileNav = ({
   const [isProfileSettingsModalVisible, setProfileSettingsModalVisible] =
     useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -67,13 +68,15 @@ const ProfileNav = ({
     setProfileSettingsModalVisible(false);
   };
 
-  const logOut = () => {
-    axios
-      .get("http://localhost:3000/api/v1/users/logout")
-      .then((res) => {
-        location.reload(true);
-      })
-      .catch((err) => console.log(err));
+  const logOut = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/v1/users/logout");
+      // location.reload(true);
+      navigate("/sign-in");
+    } catch (err) {
+      console.error("Error logging out:", err);
+      // Handle error if needed
+    }
   };
 
   return (

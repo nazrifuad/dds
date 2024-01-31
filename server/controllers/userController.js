@@ -88,8 +88,8 @@ exports.login = async (req, res) => {
         if (result.length > 0) {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
-              const name = result[0].name;
-              const token = jwt.sign({ name }, "jwt-secret-token", {
+              const id = result[0].id;
+              const token = jwt.sign({ id }, "jwt-secret-token", {
                 expiresIn: "1d",
               });
               res.cookie("token", token);
@@ -117,21 +117,6 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getLogin = async (req, res) => {
-  try {
-    if (req.session.user) {
-      res.status(200).json({
-        loggedIn: true,
-        user: req.session.user,
-      });
-    } else {
-      res.status(401).json({
-        loggedIn: false,
-      });
-    }
-  } catch (err) {}
-};
-
 exports.verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
@@ -147,10 +132,22 @@ exports.verifyUser = (req, res, next) => {
           message: "Token Doesnt Match",
         });
       } else {
-        req.name = decoded.name;
+        req.id = decoded.id;
         next();
       }
     });
+  }
+};
+
+exports.verifyNotLoggedIn = (req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    return res.status(403).json({
+      status: "Error",
+      message: "Already logged in",
+    });
+  } else {
+    next();
   }
 };
 
@@ -165,5 +162,37 @@ exports.logout = async (req, res) => {
       status: "Error",
       message: `${err.message}`,
     });
+  }
+};
+
+exports.getLogin = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      res.status(401).json({
+        logged: false,
+        status: "Error",
+        message: "No Token",
+      });
+    } else {
+      jwt.verify(token, "jwt-secret-token", (err, decoded) => {
+        if (err) {
+          res.status(401).json({
+            logged: false,
+            status: "Error",
+            message: "Token Doesnt Match",
+          });
+        } else {
+          req.id = decoded.id;
+          res.status(200).json({
+            logged: true,
+            status: "success",
+            user: req.id,
+          });
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
   }
 };
