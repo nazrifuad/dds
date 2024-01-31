@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -31,7 +32,6 @@ exports.getAllUsers = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const connection = req.dbConnection;
-
     const email = req.body.email;
     const password = req.body.password;
 
@@ -63,6 +63,107 @@ exports.createUser = async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "Internal Server Error",
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const connection = req.dbConnection;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    connection.query(
+      "SELECT *  FROM `user` WHERE `email` = ?",
+      email,
+      (err, result) => {
+        if (err) {
+          console.error(`Error: ${err}`);
+          return res.status(404).json({
+            status: "Error",
+            message: `Wrong username/password combination!`,
+          });
+        }
+
+        if (result.length > 0) {
+          bcrypt.compare(password, result[0].password, (error, response) => {
+            if (response) {
+              const name = result[0].name;
+              const token = jwt.sign({ name }, "jwt-secret-token", {
+                expiresIn: "1d",
+              });
+              res.cookie("token", token);
+              return res.status(200).json({
+                status: "success",
+                data: token,
+              });
+            } else {
+              return res.status(404).json({
+                status: "Error",
+                message: `Wrong username/password combination!`,
+              });
+            }
+          });
+        } else {
+          return res.status(404).json({
+            status: "Error",
+            message: `Wrong username/password combination!`,
+          });
+        }
+      }
+    );
+  } catch (err) {
+    //some error handling here
+  }
+};
+
+exports.getLogin = async (req, res) => {
+  try {
+    if (req.session.user) {
+      res.status(200).json({
+        loggedIn: true,
+        user: req.session.user,
+      });
+    } else {
+      res.status(401).json({
+        loggedIn: false,
+      });
+    }
+  } catch (err) {}
+};
+
+exports.verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    res.status(401).json({
+      status: "Error",
+      message: "No Token",
+    });
+  } else {
+    jwt.verify(token, "jwt-secret-token", (err, decoded) => {
+      if (err) {
+        res.status(401).json({
+          status: "Error",
+          message: "Token Doesnt Match",
+        });
+      } else {
+        req.name = decoded.name;
+        next();
+      }
+    });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "Error",
+      message: `${err.message}`,
     });
   }
 };
