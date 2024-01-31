@@ -135,20 +135,35 @@ exports.getLogin = async (req, res) => {
 exports.verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    console.log("no token");
     res.status(401).json({
       status: "Error",
       message: "No Token",
     });
   } else {
-    console.log("got token");
     jwt.verify(token, "jwt-secret-token", (err, decoded) => {
       if (err) {
-        console.log("no match");
+        res.status(401).json({
+          status: "Error",
+          message: "Token Doesnt Match",
+        });
       } else {
         req.name = decoded.name;
         next();
       }
+    });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "Error",
+      message: `${err.message}`,
     });
   }
 };
