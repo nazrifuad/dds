@@ -14,19 +14,24 @@ const NewStyleguide = ({
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  const createStyleGuide = (event) => {
-    console.log("cjcjc");
+  const createStyleGuide = async (event) => {
     event.preventDefault();
-    Axios.post("http://localhost:3000/api/v1/styleguides", { name })
-      .then((res) => {
-        if (res.status === "success") {
-          navigate("ssss");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("StyleGuide failed to create");
-      });
+
+    try {
+      const response = await Axios.post(
+        "http://localhost:3000/api/v1/styleguides",
+        { name }
+      );
+      console.log("dd");
+
+      if (response.status === 201) {
+        const styleGuideId = response.data.id;
+        navigate(`/edit-styleguide/${styleGuideId}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("StyleGuide failed to create");
+    }
   };
 
   const modalRef = useRef(null);

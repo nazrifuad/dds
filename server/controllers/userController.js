@@ -67,53 +67,132 @@ exports.createUser = async (req, res) => {
   }
 };
 
+// exports.login = async (req, res) => {
+//   try {
+//     const connection = req.dbConnection;
+//     const email = req.body.email;
+//     const password = req.body.password;
+
+//     connection.query(
+//       "SELECT *  FROM `user` WHERE `email` = ?",
+//       email,
+//       (err, result) => {
+//         if (err) {
+//           console.error(`Error: ${err}`);
+//           return res.status(404).json({
+//             status: "Error",
+//             message: `Wrong username/password combination!`,
+//           });
+//         }
+
+//         if (result.length > 0) {
+//           bcrypt.compare(password, result[0].password, (error, response) => {
+//             if (response) {
+//               const id = result[0].id;
+//               const organization_id = result[0].organization_id;
+//               const token = jwt.sign(
+//                 { id, organization_id },
+//                 "jwt-secret-token",
+//                 {
+//                   expiresIn: "1d",
+//                 }
+//               );
+//               res.cookie("token", token);
+//               return res.status(200).json({
+//                 status: "success",
+//                 data: token,
+//               });
+//             } else {
+//               return res.status(404).json({
+//                 status: "Error",
+//                 message: `Wrong username/password combination!`,
+//               });
+//             }
+//           });
+//         } else {
+//           return res.status(404).json({
+//             status: "Error",
+//             message: `Wrong username/password combination!`,
+//           });
+//         }
+//       }
+//     );
+//   } catch (err) {
+//     //some error handling here
+//   }
+// };
+
 exports.login = async (req, res) => {
   try {
     const connection = req.dbConnection;
     const email = req.body.email;
     const password = req.body.password;
 
-    connection.query(
-      "SELECT *  FROM `user` WHERE `email` = ?",
-      email,
-      (err, result) => {
-        if (err) {
-          console.error(`Error: ${err}`);
-          return res.status(404).json({
-            status: "Error",
-            message: `Wrong username/password combination!`,
-          });
-        }
+    if (!connection) {
+      return res.status(500).json({
+        status: "error",
+        message: "Connection Error",
+      });
+    }
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "error",
+        message: "No email or password provided",
+      });
+    }
 
-        if (result.length > 0) {
-          bcrypt.compare(password, result[0].password, (error, response) => {
-            if (response) {
-              const id = result[0].id;
-              const token = jwt.sign({ id }, "jwt-secret-token", {
-                expiresIn: "1d",
-              });
-              res.cookie("token", token);
-              return res.status(200).json({
-                status: "success",
-                data: token,
-              });
-            } else {
-              return res.status(404).json({
-                status: "Error",
-                message: `Wrong username/password combination!`,
-              });
-            }
-          });
-        } else {
-          return res.status(404).json({
-            status: "Error",
-            message: `Wrong username/password combination!`,
-          });
+    const user = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM `user` WHERE `email` = ?",
+        email,
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
         }
+      );
+    });
+
+    if (user.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Wrong username/password combination",
+      });
+    }
+
+    bcrypt.compare(password, user[0].password, (error, response) => {
+      if (error) {
+        return res.status(500).json({
+          status: "error",
+          message: "Error comparing passwords",
+        });
       }
-    );
+      if (!response) {
+        return res.status(401).json({
+          status: "error",
+          message: "Wrong username/password combination",
+        });
+      }
+
+      const id = user[0].id;
+      const organization_id = user[0].organization_id;
+      const token = jwt.sign({ id, organization_id }, "jwt-secret-token", {
+        expiresIn: "1d",
+      });
+
+      res.cookie("token", token);
+      res.status(200).json({
+        status: "success",
+        data: token,
+      });
+    });
   } catch (err) {
-    //some error handling here
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
   }
 };
 

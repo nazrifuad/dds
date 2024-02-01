@@ -1,5 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import closeIcon from "../../assets/img/close-icon.svg";
+import Axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 const NewPage = ({
   isVisible,
@@ -9,7 +11,21 @@ const NewPage = ({
   searchTerm,
 }) => {
   const modalRef = useRef(null);
+  const [name, setName] = useState("");
+  const { id } = useParams();
+  const navigate = useNavigate();
 
+  const handlePageSubmit = (event) => {
+    event.preventDefault();
+    Axios.post(`http://localhost:3000/api/v1/styleguides/${id}/pages`, { name })
+      .then(() => {
+        alert("User registration successful");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert(`User registration failed ${error}`);
+      });
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -41,7 +57,7 @@ const NewPage = ({
               <p>Start by adding a new page</p>
             </div>
             <div className="input-wrapper pt-50">
-              <form className="form-custom" onSubmit={handleSearchSubmit}>
+              <form className="form-custom" onSubmit={handlePageSubmit}>
                 <div className="form-row">
                   <div className="form-col">
                     <label htmlFor="pageName">
@@ -53,8 +69,9 @@ const NewPage = ({
                           id="pageName"
                           type="text"
                           placeholder="Enter the page name"
-                          value={searchTerm}
-                          onChange={handleSearchChange}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
                           autoComplete="off"
                           required
                         />
@@ -63,14 +80,19 @@ const NewPage = ({
                   </div>
                 </div>
 
-                <div className="form-row">
+                {/* <div className="form-row">
                   <div className="form-col">
                     <label htmlFor="pageCategory">
                       <p>Page Category</p>
                     </label>
                     <div className="input-body pt-20">
                       <div className="input-details">
-                        <select id="pageCategory" className="custom-select form-select" value={searchTerm} onChange={handleSearchChange}>
+                        <select
+                          id="pageCategory"
+                          className="custom-select form-select"
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                        >
                           <option value="Colors">Colors</option>
                           <option value="Typography">Typography</option>
                           <option value="Logo">Logo</option>
@@ -78,7 +100,7 @@ const NewPage = ({
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="form-row">
                   <div className="form-col form-submit-btn">

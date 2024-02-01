@@ -26,21 +26,21 @@ const Styleguide = () => {
 
   //backend
   const [styleguides, setStyleguides] = useState([]);
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await Axios.get(
-        "http://localhost:3000/api/v1/styleguides"
-      );
-      setStyleguides(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      navigate("/sign-in");
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Axios.get(
+          "http://localhost:3000/api/v1/styleguides"
+        );
+        setStyleguides(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        navigate("/sign-in");
+      }
+    };
+    fetchData();
+  }, [navigate]);
 
   // useEffect(() => {
   //   axios.get("http://127.0.0.1:3000/api/v1/styleguides").then((res) => {
@@ -118,70 +118,69 @@ const Styleguide = () => {
     <>
       <section className="section main-section full-height">
         <h2>Styleguide List</h2>
-        <ul>
-          {styleguides.map((styleguide) => (
-            <li key={styleguide.id}>{styleguide.name}</li>
-          ))}
-        </ul>
         <div className="container">
           {/* gradient bg */}
           <MainGradient />
           <div className="section-wrap">
             {/* styleguide slider */}
-            <div className="general-wrap">
-              <div className="general-title">
-                <h4>Styleguides</h4>
+            {styleguides && styleguides.length > 0 ? (
+              <div className="general-wrap">
+                <div className="general-title">
+                  <h4>Styleguides</h4>
+                </div>
+                {/* navigation buttons */}
+                <div className="custom-nav-wrapper styleguide">
+                  <NavButton />
+                </div>
               </div>
-              {/* navigation buttons */}
-              <div className="custom-nav-wrapper styleguide">
-                <NavButton />
-              </div>
-            </div>
+            ) : (
+              ""
+            )}
 
             <div className="swiper-container styleguide">
               <div className="swiper general styleguide">
                 <div className="swiper-wrapper">
-                  {styleguides.map((styleguide) => (
-                    <div
-                      key={styleguide.id}
-                      className="swiper-slide cards-wrap"
-                    >
-                      <Link to="/shortcut" className="card-link-wrapper">
-                        <div className="cards-desc-wrap">
-                          <div className="cards-image-wrap">
-                            <img src={setiaLogo} alt="SP Setia" />
+                  {styleguides &&
+                    styleguides.map((styleguide) => (
+                      <div
+                        key={styleguide.id}
+                        className="swiper-slide cards-wrap"
+                      >
+                        <Link
+                          to={`../edit-styleguide/${styleguide.id}`}
+                          className="card-link-wrapper"
+                        >
+                          <div className="cards-desc-wrap">
+                            <div className="cards-image-wrap">
+                              <img
+                                src={`http://localhost:3000/uploads/img/${
+                                  styleguide.logo
+                                    ? styleguide.logo
+                                    : "default-styleguide.png"
+                                }`}
+                                alt="#"
+                              />
+                            </div>
+                            <div className="cards-title">
+                              <h5 className="big">{styleguide.name}</h5>
+                            </div>
                           </div>
-                          <div className="cards-title">
-                            <h5 className="big">{styleguide.name}</h5>
-                          </div>
-                        </div>
-                      </Link>
-                      <OverlayEdit
-                        showModal={() => showModal("editStyleguide")}
-                      />
-                    </div>
-                  ))}
-                  <div className="swiper-slide cards-wrap">
-                    <Link to="/shortcut" className="card-link-wrapper">
-                      <div className="cards-desc-wrap">
-                        <div className="cards-image-wrap">
-                          <img src={setiaLogo} alt="SP Setia" />
-                        </div>
-                        <div className="cards-title">
-                          <h5 className="big">SP Setia Berhad</h5>
-                        </div>
+                        </Link>
+                        <OverlayEdit
+                          showModal={() => showModal("editStyleguide")}
+                        />
                       </div>
-                    </Link>
-                    <OverlayEdit
-                      showModal={() => showModal("editStyleguide")}
-                    />
-                  </div>
+                    ))}
                 </div>
               </div>
             </div>
 
             {/* new styleguide button */}
-            <div className="general-wrap pt-100">
+            <div
+              className={`general-wrap ${
+                styleguides && styleguides.length > 0 ? "pt-100" : ""
+              }`}
+            >
               <div className="general-title">
                 <h4>Add New Styleguide</h4>
               </div>

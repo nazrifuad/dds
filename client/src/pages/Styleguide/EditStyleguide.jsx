@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import Axios from "axios";
 
 import MainGradient from "../../components/Gradient/MainGradient";
 import NavButton from "../../components/NavButton/NavButton";
@@ -15,9 +16,29 @@ import OverlayEdit from "../../components/Button/OverlayEdit";
 import TimeIcon from "../../components/Icons/TimeIcon";
 import ArrowIcon from "../../components/Icons/ArrowIcon";
 
-
-
 const EditStyleguide = () => {
+  //backend
+  const { id } = useParams();
+  const [categories, setCategories] = useState([]);
+  const [elements, setElements] = useState([]);
+
+  const fetchData = async (id) => {
+    try {
+      const response = await Axios.get(
+        `http://localhost:3000/api/v1/styleguides/${id}`
+      );
+      console.log(response.data.data);
+      setCategories(response.data.data.categories);
+      setElements(response.data.data.elements);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(id);
+  }, [id]);
+
   // add modal function
   const [isNewPageModalVisible, setNewPageModalVisible] = useState(false);
   const [isNewCategoryModalVisible, setNewCategoryModalVisible] =
@@ -82,14 +103,12 @@ const EditStyleguide = () => {
     };
   }, [isStatusTagDropdownVisible]);
 
-
   // add accordion functionality
   const [activeAccordionTab, setActiveAccordionTab] = useState(null);
 
   const toggleAccordionTab = (tabName) => {
     setActiveAccordionTab(activeAccordionTab === tabName ? null : tabName);
   };
-
 
   return (
     <>
@@ -112,7 +131,7 @@ const EditStyleguide = () => {
 
               <div className="section-wrap">
                 <div className="accordion-wrapper">
-                  <div className="accordion-item">
+                  {/* <div className="accordion-item">
                     <div className="accordion-title">
                       <p className="big">Getting Started</p>
                     </div>
@@ -133,15 +152,22 @@ const EditStyleguide = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="accordion-item">
-                    <div className="accordion-title">
+                    {/* <div className="accordion-title">
                       <p className="big">Style</p>
                     </div>
                     <div className="accordion-body">
-                      <div className={`accordion-tab ${activeAccordionTab === "Colors" ? "active" : ""}`}>
-                        <div className="accordion-tab-wrapper" onClick={() => toggleAccordionTab("Colors")}>
+                      <div
+                        className={`accordion-tab ${
+                          activeAccordionTab === "Colors" ? "active" : ""
+                        }`}
+                      >
+                        <div
+                          className="accordion-tab-wrapper"
+                          onClick={() => toggleAccordionTab("Colors")}
+                        >
                           <p className="small">Colors</p>
                           <div className="toggle-arrow">
                             <ArrowIcon />
@@ -163,8 +189,15 @@ const EditStyleguide = () => {
                           <p className="small">Typography</p>
                         </div>
                       </div>
-                      <div className={`accordion-tab ${activeAccordionTab === "Logo" ? "active" : ""}`}>
-                        <div className="accordion-tab-wrapper" onClick={() => toggleAccordionTab("Logo")}>
+                      <div
+                        className={`accordion-tab ${
+                          activeAccordionTab === "Logo" ? "active" : ""
+                        }`}
+                      >
+                        <div
+                          className="accordion-tab-wrapper"
+                          onClick={() => toggleAccordionTab("Logo")}
+                        >
                           <p className="small">Logo</p>
                           <div className="toggle-arrow">
                             <ArrowIcon />
@@ -184,40 +217,65 @@ const EditStyleguide = () => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
+                    {categories.map((category) => (
+                      <div className="accordion-title" key={category.id}>
+                        <p className="big m-0">{category.name}</p>
+                        <div className="accordion-body">
+                          {category.page.map((page) => (
+                            //if page got tab then
+                            <div className="accordion-tab" key={page.id}>
+                              <div className="accordion-tab-wrapper">
+                                <p className="small">
+                                  <Link
+                                    to={`/edit-styleguide/${id}/page/${page.id}`}
+                                    className="inactive"
+                                  >
+                                    {page.name}
+                                  </Link>
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="btn-wrap btn-list">
+                            {/* add new page button */}
+                            <div
+                              className="flex-center flex-start btn"
+                              onClick={() => showModal("NewPage")}
+                            >
+                              <div className="default-btn main-btn upload">
+                                <div className="btn-link add-page">
+                                  <button
+                                    type="submit"
+                                    className="btn-text"
+                                    data-replace="Add Page"
+                                  >
+                                    <span className="inner-btn-text">
+                                      Add Page
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* the modal */}
+                            {/* new page */}
+                            <NewPage
+                              isVisible={isNewPageModalVisible}
+                              closeModal={closeModal}
+                              handleSearchChange={handleSearchChange}
+                              handleSearchSubmit={handleSearchSubmit}
+                              searchTerm={searchTerm}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 {/* button bottom */}
                 <div className="btn-wrap">
-                  {/* add new page button */}
-                  <div
-                    className="flex-center flex-start btn"
-                    onClick={() => showModal("NewPage")}
-                  >
-                    <div className="default-btn main-btn upload">
-                      <div className="btn-link">
-                        <button
-                          type="submit"
-                          className="btn-text"
-                          data-replace="Add Page"
-                        >
-                          <span className="inner-btn-text">Add Page</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* the modal */}
-                  {/* new page */}
-                  <NewPage
-                    isVisible={isNewPageModalVisible}
-                    closeModal={closeModal}
-                    handleSearchChange={handleSearchChange}
-                    handleSearchSubmit={handleSearchSubmit}
-                    searchTerm={searchTerm}
-                  />
-
                   {/* add new category button */}
                   <div
                     className="flex-center flex-start btn"
@@ -338,13 +396,13 @@ const EditStyleguide = () => {
                       <p>Add an introduction (Optional)</p>
                     </div>
 
-                    <div className="general-editor">
+                    {/* <div className="general-editor">
                       <div className="general-big-desc editor">
                         <h4>Common Logo Version</h4>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="general-editor">
+                    {/* <div className="general-editor">
                       <div className="row">
                         <div className="col-3">
                           <img src={mainLogo} alt="GBS Logo" />
@@ -438,7 +496,18 @@ const EditStyleguide = () => {
                           add content..
                         </p>
                       </div>
-                    </div>
+                    </div> */}
+                    {elements.map((element) => (
+                      <div className="general-editor" key={element.id}>
+                        <div className="row">
+                          <div className="col-8">
+                            <div className="general-subtitle editor active">
+                              <p>{element.content}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="secondary-editor tab">

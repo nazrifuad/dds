@@ -6,9 +6,12 @@ const dbConnectionMiddleware = require("./../middleware/dbConnection");
 const router = express.Router();
 
 router.use(dbConnectionMiddleware);
-
+//  .get(userController.verifyUser, styleguideController.getAllStyleGuides)
 router
   .route("/")
-  .get(userController.verifyUser, styleguideController.getAllStyleGuides)
+  .get(styleguideController.getAllStyleGuides)
   .post(styleguideController.createStyleGuides);
+
+router.route("/:id").get(styleguideController.getStyleGuide);
+router.route("/:id/pages").get(styleguideController.createPages);
 module.exports = router;
