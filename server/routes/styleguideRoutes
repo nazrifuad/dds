@@ -1,7 +1,7 @@
 const express = require("express");
 const styleguideController = require("./../controllers/styleguideController");
 const userController = require("./../controllers/userController");
-const categoryController = require("../controllers/categoryController");
+const categoryController = require("./../controllers/categoryController");
 const dbConnectionMiddleware = require("./../middleware/dbConnection");
 
 const router = express.Router();

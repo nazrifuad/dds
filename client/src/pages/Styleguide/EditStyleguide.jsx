@@ -22,6 +22,11 @@ const EditStyleguide = () => {
   const [categories, setCategories] = useState([]);
   const [elements, setElements] = useState([]);
   const [pageData, setPageData] = useState([]);
+  const [text, setText] = useState("Click to edit me");
+
+  const handleChange = (event) => {
+    setText(event.target.textContent);
+  };
 
   const fetchData = async (id) => {
     try {
@@ -409,7 +414,23 @@ const EditStyleguide = () => {
                     </div>
                     {/* title/tab description */}
                     <div className="general-subtitle editor">
-                      <p>Add an introduction (Optional)</p>
+                      {/* <p>
+                        <input
+                          id="userEmail"
+                          type="email"
+                          name="email"
+                          placeholder="Enter your email"
+                          autoComplete="off"
+                          required
+                        />
+                      </p> */}
+                      <span
+                        contentEditable
+                        onBlur={handleChange} // Handle changes when focus is lost
+                        onClick={(e) => e.stopPropagation()} // Prevent focusing on click
+                      >
+                        {text}
+                      </span>
                     </div>
 
                     {/* <div className="general-editor">

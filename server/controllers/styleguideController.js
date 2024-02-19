@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("./../models/User");
+const cronJobs = require("./../cronJob");
 
 exports.getAllStyleGuides = async (req, res) => {
   try {
@@ -178,7 +179,7 @@ exports.getStyleGuide = async (req, res) => {
   try {
     const connection = req.dbConnection;
     const id = req.params.id;
-
+    //cronJobs(); this is to save data in db periodically
     const getStyleGuide = () => {
       return new Promise((resolve, reject) => {
         connection.query(
@@ -270,4 +271,8 @@ exports.getStyleGuide = async (req, res) => {
       message: `Failed to fetch style guide: ${err.message}`,
     });
   }
+};
+
+exports.logMessage = async (req, res) => {
+  console.log("Cron job executed at:", new Date().toLocaleString());
 };
