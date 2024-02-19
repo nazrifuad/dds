@@ -20,10 +20,11 @@ const NewSignIn = () => {
     event.preventDefault();
     Axios.post("http://localhost:3000/api/v1/users/login", { email, password })
       .then((res) => {
-        if (res.data.status === "success") {
-          console.log(res);
-          alert("User Logged IN");
+        if (res.status === 200) {
+          alert("User Logged In");
+          localStorage.setItem("token", res.data.data);
           navigate("/styleguide");
+          location.reload(true);
         } else {
           alert(res.data.error);
         }

@@ -1,0 +1,11 @@
+const express = require("express");
+const pageController = require("../controllers/pageController");
+const dbConnectionMiddleware = require("../middleware/dbConnection");
+
+const router = express.Router();
+
+router.use(dbConnectionMiddleware);
+
+router.route("/:category_id/pages").post(pageController.createPage);
+//router.route("/:category_id/pages/page_id").get(pageController.getPage);
+module.exports = router;

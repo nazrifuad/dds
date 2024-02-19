@@ -27,20 +27,43 @@ const Styleguide = () => {
   //backend
   const [styleguides, setStyleguides] = useState([]);
 
+  const fetchData = () => {
+    return new Promise((resolve, reject) => {
+      Axios.get("http://localhost:3000/api/v1/styleguides")
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Axios.get(
-          "http://localhost:3000/api/v1/styleguides"
-        );
+    fetchData()
+      .then((response) => {
+        console.log(response);
         setStyleguides(response.data.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        navigate("/sign-in");
-      }
-    };
-    fetchData();
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
   }, [navigate]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await Axios.get(
+  //         "http://localhost:3000/api/v1/styleguides"
+  //       );
+  //       setStyleguides(response.data.data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       navigate("/sign-in");
+  //     }
+  //   };
+  //   fetchData();
+  // }, [navigate]);
 
   // useEffect(() => {
   //   axios.get("http://127.0.0.1:3000/api/v1/styleguides").then((res) => {

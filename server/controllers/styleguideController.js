@@ -1,22 +1,50 @@
 const jwt = require("jsonwebtoken");
+const User = require("./../models/User");
 
 exports.getAllStyleGuides = async (req, res) => {
   try {
     const connection = req.dbConnection;
-    const getData = () => {
+    const token = req.cookies.token;
+
+    const getOrganization = (userId) => {
       return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM styleguide", (err, rows) => {
-          if (err) reject("Failed to fetch data");
-          resolve(rows);
-        });
+        connection.query(
+          `SELECT organization_id FROM user where id = ?`,
+          userId,
+          (err, rows) => {
+            if (err) reject(err);
+            resolve(rows[0].organization_id);
+          }
+        );
       });
     };
-    const data = await getData();
+    const getData = (organization_id) => {
+      return new Promise((resolve, reject) => {
+        connection.query(
+          "SELECT * FROM styleguide where organization_id = ?",
+          organization_id,
+          (err, rows) => {
+            if (err) {
+              reject("Failed to fetch data");
+              return;
+            }
+            resolve(rows);
+          }
+        );
+      });
+    };
+
+    const userId = await User.getUserId(token);
+    const organization_id = await getOrganization(userId);
+    const data = await getData(organization_id);
+
+    connection.release();
     res.status(200).json({
       status: "success",
       data: data,
     });
   } catch (err) {
+    if (connection) connection.release();
     res.status(500).json({
       status: "error",
       message: "Internal Server Error",
@@ -137,6 +165,7 @@ exports.createStyleGuides = async (req, res) => {
     });
     connection.release();
   } catch (err) {
+    if (connection) connection.release();
     console.error("Unexpected error:", err);
     res.status(500).json({
       status: "error",
@@ -222,7 +251,7 @@ exports.getStyleGuide = async (req, res) => {
       });
     });
     const elements = await getElements(pages[0].id);
-    console.log(elements);
+    connection.release();
 
     const data = {
       styleguide,
@@ -235,15 +264,10 @@ exports.getStyleGuide = async (req, res) => {
       data: data,
     });
   } catch (err) {
+    if (connection) connection.release();
     res.status(404).json({
       status: "error",
       message: `Failed to fetch style guide: ${err.message}`,
     });
   }
-};
-
-exports.createPages = async (req, res) => {
-  res.status(200).json({
-    message: `Successfully created`,
-  });
 };

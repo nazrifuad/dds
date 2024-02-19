@@ -18,16 +18,16 @@ import ArrowIcon from "../../components/Icons/ArrowIcon";
 
 const EditStyleguide = () => {
   //backend
-  const { id } = useParams();
+  const { id, pageId } = useParams();
   const [categories, setCategories] = useState([]);
   const [elements, setElements] = useState([]);
+  const [pageData, setPageData] = useState([]);
 
   const fetchData = async (id) => {
     try {
       const response = await Axios.get(
         `http://localhost:3000/api/v1/styleguides/${id}`
       );
-      console.log(response.data.data);
       setCategories(response.data.data.categories);
       setElements(response.data.data.elements);
     } catch (error) {
@@ -35,9 +35,21 @@ const EditStyleguide = () => {
     }
   };
 
+  const fetchPage = async () => {
+    try {
+      const response = await Axios.get(
+        `http://localhost:3000/api/v1/pages/${pageId}`
+      );
+      setPageData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData(id);
-  }, [id]);
+    if (pageId) fetchPage();
+  }, [id, pageId]);
 
   // add modal function
   const [isNewPageModalVisible, setNewPageModalVisible] = useState(false);
@@ -221,10 +233,11 @@ const EditStyleguide = () => {
                     {categories.map((category) => (
                       <div className="accordion-title" key={category.id}>
                         <p className="big m-0">{category.name}</p>
-                        <div className="accordion-body">
-                          {category.page.map((page) => (
-                            //if page got tab then
-                            <div className="accordion-tab" key={page.id}>
+
+                        {category.page.map((page) => (
+                          //if page got tab then
+                          <div className="accordion-body" key={page.id}>
+                            <div className="accordion-tab">
                               <div className="accordion-tab-wrapper">
                                 <p className="small">
                                   <Link
@@ -236,38 +249,40 @@ const EditStyleguide = () => {
                                 </p>
                               </div>
                             </div>
-                          ))}
-                          <div className="btn-wrap btn-list">
-                            {/* add new page button */}
-                            <div
-                              className="flex-center flex-start btn"
-                              onClick={() => showModal("NewPage")}
-                            >
-                              <div className="default-btn main-btn upload">
-                                <div className="btn-link add-page">
-                                  <button
-                                    type="submit"
-                                    className="btn-text"
-                                    data-replace="Add Page"
-                                  >
-                                    <span className="inner-btn-text">
-                                      Add Page
-                                    </span>
-                                  </button>
-                                </div>
+                          </div>
+                        ))}
+                        <div className="btn-wrap btn-list">
+                          {/* add new page button */}
+                          <div
+                            className="flex-center flex-start btn"
+                            onClick={() => showModal("NewPage")}
+                          >
+                            <div className="default-btn main-btn upload">
+                              <div className="btn-link add-page">
+                                <button
+                                  type="submit"
+                                  className="btn-text"
+                                  data-replace="Add Page"
+                                >
+                                  <span className="inner-btn-text">
+                                    Add Page
+                                  </span>
+                                </button>
                               </div>
                             </div>
-
-                            {/* the modal */}
-                            {/* new page */}
-                            <NewPage
-                              isVisible={isNewPageModalVisible}
-                              closeModal={closeModal}
-                              handleSearchChange={handleSearchChange}
-                              handleSearchSubmit={handleSearchSubmit}
-                              searchTerm={searchTerm}
-                            />
                           </div>
+
+                          {/* the modal */}
+                          {/* new page */}
+                          <NewPage
+                            categoryID={category.id}
+                            isVisible={isNewPageModalVisible}
+                            closeModal={closeModal}
+                            handleSearchChange={handleSearchChange}
+                            handleSearchSubmit={handleSearchSubmit}
+                            fetchData={fetchData}
+                            searchTerm={searchTerm}
+                          />
                         </div>
                       </div>
                     ))}
@@ -302,6 +317,7 @@ const EditStyleguide = () => {
                     handleSearchChange={handleSearchChange}
                     handleSearchSubmit={handleSearchSubmit}
                     searchTerm={searchTerm}
+                    fetchData={fetchData}
                   />
                 </div>
               </div>
@@ -314,11 +330,11 @@ const EditStyleguide = () => {
                   <div className="breadcrumbs-wrapper">
                     <div className="item home">
                       <ArrowIcon />
-                      <Link to="#">Logo</Link>
+                      <Link to="#">Getting Started</Link>
                     </div>
                     <div className="item active">
                       <ArrowIcon />
-                      <Link to="#">Versions</Link>
+                      <Link to="#">{pageData.name}</Link>
                     </div>
                   </div>
 
@@ -342,7 +358,7 @@ const EditStyleguide = () => {
                     {/* bottom editor */}
                     <div className="top-title editor">
                       <div className="general-big-desc editor">
-                        <h3>Versions</h3>
+                        <h3>{pageData.name}</h3>
                       </div>
                       <div className="status-tag-wrapper">
                         <div

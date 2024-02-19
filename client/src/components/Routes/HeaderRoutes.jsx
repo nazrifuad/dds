@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "../../pages/Nav/Nav";
 import Styleguide from "../../pages/Styleguide/Styleguide";
@@ -14,14 +14,30 @@ import ForgotPass from "../../pages/Forgot/Forgot";
 
 // header routing
 const HeaderRoutes = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkLoggedIn = () => {
+      const loggedIn = !!localStorage.getItem("token");
+      setIsLoggedIn(loggedIn);
+      console.log(isLoggedIn);
+    };
+    checkLoggedIn();
+  });
   return (
     <Router>
       <>
         <Nav />
         <Routes>
-          <Route path="/" element={<Homepage />} />
+          <Route
+            path="/"
+            element={isLoggedIn ? <Styleguide /> : <Homepage />}
+          />
           <Route path="/styleguide" element={<Styleguide />} />
           <Route path="/edit-styleguide/:id" element={<EditStyleguide />} />
+          <Route
+            path="/edit-styleguide/:id/page/:pageId"
+            element={<EditStyleguide />}
+          />
           <Route path="/shortcut" element={<Shortcut />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/preview" element={<Preview />} />

@@ -5,8 +5,13 @@ const dbConnectionMiddleware = require("./../middleware/dbConnection");
 const router = express.Router();
 
 router.use(dbConnectionMiddleware);
+router.route("/:id").get(pageController.getPage);
 
-//salah kene buat category dulu
-router.route("/").post(pageController.createPage);
+router.use((req, res, next) => {
+  if (req.dbConnection) {
+    req.dbConnection.release();
+  }
+  next();
+});
 
 module.exports = router;

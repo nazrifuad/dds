@@ -72,10 +72,11 @@ const ProfileNav = ({
     try {
       const res = await axios.get("http://localhost:3000/api/v1/users/logout");
       // location.reload(true);
+      localStorage.removeItem("token");
       navigate("/sign-in");
+      location.reload(true);
     } catch (err) {
       console.error("Error logging out:", err);
-      // Handle error if needed
     }
   };
 

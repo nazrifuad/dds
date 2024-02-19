@@ -1,9 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import closeIcon from "../../assets/img/close-icon.svg";
 import Axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const NewPage = ({
+  categoryID,
+  fetchData,
   isVisible,
   closeModal,
   handleSearchChange,
@@ -13,19 +15,25 @@ const NewPage = ({
   const modalRef = useRef(null);
   const [name, setName] = useState("");
   const { id } = useParams();
-  const navigate = useNavigate();
 
-  const handlePageSubmit = (event) => {
+  const createPage = async (event) => {
     event.preventDefault();
-    Axios.post(`http://localhost:3000/api/v1/styleguides/${id}/pages`, { name })
-      .then(() => {
-        alert("User registration successful");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert(`User registration failed ${error}`);
-      });
+    try {
+      const response = await Axios.post(
+        `http://localhost:3000/api/v1/categories/${categoryID}/pages`,
+        { name }
+      );
+      if (response.status === 201) {
+        alert("Page Created Successfully");
+        fetchData(id);
+        closeModal();
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Failed to create");
+    }
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -46,7 +54,10 @@ const NewPage = ({
 
   return (
     <>
-      <div className={`modal-section ${isVisible ? "show-modal" : ""}`}>
+      <div
+        className={`modal-section ${isVisible ? "show-modal" : ""}`}
+        categoryid={categoryID}
+      >
         <div ref={modalRef} className="modal-container">
           <div className="modal-item">
             <div className="close-button" onClick={closeModal}>
@@ -57,7 +68,7 @@ const NewPage = ({
               <p>Start by adding a new page</p>
             </div>
             <div className="input-wrapper pt-50">
-              <form className="form-custom" onSubmit={handlePageSubmit}>
+              <form className="form-custom" onSubmit={createPage}>
                 <div className="form-row">
                   <div className="form-col">
                     <label htmlFor="pageName">

@@ -12,15 +12,14 @@ exports.getAllUsers = async (req, res) => {
           message: "Internal Server Error",
         });
       }
-
+      connection.release();
       res.status(200).json({
         status: "success",
         data: rows,
       });
-
-      connection.release();
     });
   } catch (err) {
+    if (connection) connection.release();
     console.error("Unexpected error:", err);
     res.status(500).json({
       status: "error",
@@ -48,17 +47,16 @@ exports.createUser = async (req, res) => {
             message: `Internal Server Error ${err.message}`,
           });
         }
-
+        connection.release();
         res.status(201).json({
           status: "success",
           message: "User inserted successfully",
           data: {},
         });
-
-        connection.release();
       }
     );
   } catch (err) {
+    if (connection) connection.release();
     console.error("Unexpected error:", err);
     res.status(500).json({
       status: "error",

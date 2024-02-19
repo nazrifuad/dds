@@ -16,14 +16,11 @@ const NewStyleguide = ({
 
   const createStyleGuide = async (event) => {
     event.preventDefault();
-
     try {
       const response = await Axios.post(
         "http://localhost:3000/api/v1/styleguides",
         { name }
       );
-      console.log("dd");
-
       if (response.status === 201) {
         const styleGuideId = response.data.id;
         navigate(`/edit-styleguide/${styleGuideId}`);

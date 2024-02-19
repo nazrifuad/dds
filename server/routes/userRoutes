@@ -13,4 +13,11 @@ router
   .get(userController.getAllUsers)
   .post(userController.verifyNotLoggedIn, userController.createUser);
 
+router.use((req, res, next) => {
+  if (req.dbConnection) {
+    req.dbConnection.release();
+  }
+  next();
+});
+
 module.exports = router;

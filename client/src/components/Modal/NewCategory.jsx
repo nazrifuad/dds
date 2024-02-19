@@ -1,14 +1,37 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import closeIcon from "../../assets/img/close-icon.svg";
+import { useParams } from "react-router-dom";
+import Axios from "axios";
 
 const NewCategory = ({
   isVisible,
   closeModal,
+  fetchData,
   handleSearchChange,
   handleSearchSubmit,
   searchTerm,
 }) => {
   const modalRef = useRef(null);
+  const [name, setName] = useState("");
+  const { id } = useParams();
+  const createCategory = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await Axios.post(
+        `http://localhost:3000/api/v1/styleguides/${id}/categories`,
+        { name }
+      );
+      console.log(response);
+      if (response.status === 201) {
+        alert("Category Created Successfully");
+        fetchData(id);
+        closeModal();
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Failed to create");
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,7 +64,7 @@ const NewCategory = ({
               <p>Start by adding a new category</p>
             </div>
             <div className="input-wrapper pt-50">
-              <form className="form-custom" onSubmit={handleSearchSubmit}>
+              <form className="form-custom" onSubmit={createCategory}>
                 <div className="form-row">
                   <div className="form-col">
                     <label htmlFor="categoryName">
@@ -53,10 +76,11 @@ const NewCategory = ({
                           id="categoryName"
                           type="text"
                           placeholder="Enter the category name"
-                          value={searchTerm}
-                          onChange={handleSearchChange}
                           autoComplete="off"
                           required
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
                         />
                       </div>
                     </div>

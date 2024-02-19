@@ -5,15 +5,15 @@ const mysql = require("mysql");
 const app = require("./app");
 const port = process.env.PORT || 3000;
 
-// MYSQL
-const pool = mysql.createPool({
-  connectionLimit: 10, // Maximum number of connections
-  host: "localhost",
-  user: "root",
-  database: "dds_db",
-});
+// // MYSQL
+// const pool = mysql.createPool({
+//   connectionLimit: 10, // Maximum number of connections
+//   host: "localhost",
+//   user: "root",
+//   database: "dds_db",
+// });
 
-app.set("pool", pool);
+// app.set("pool", pool);
 
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
